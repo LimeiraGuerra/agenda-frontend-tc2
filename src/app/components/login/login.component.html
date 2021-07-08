@@ -1,0 +1,86 @@
+<div class="columns is-desktop is-vcentered mt-6 mb-5">
+  <div class="column is-4 is-offset-4">
+    <div class="card">
+      <div class="card-content">
+        <div class="content">
+          <h3 class="title is-3 has-text-centered">Realize seu Login</h3>
+          <div *ngIf="serverError.hasError" class="notification is-danger is-light">
+            <button class="delete" (click)="serverError.hasError = false"></button>
+            {{serverError.id | serverError}}
+          </div>
+          <form id="loginForm" [formGroup]="formLogin" (submit)="onSubmit()">
+            <div class="field">
+              <label for="email" class="label">Email:</label>
+              <div class="control">
+                <input
+                  id="email"
+                  class="input"
+                  [ngClass]="{
+                    'is-danger':
+                      formLogin.get('email')?.dirty &&
+                      !formLogin.get('email')?.valid
+                  }"
+                  type="email"
+                  formControlName="email"
+                />
+              </div>
+              <p
+                *ngIf="
+                  formLogin.get('email')?.dirty &&
+                  !formLogin.get('email')?.valid
+                "
+                class="help is-danger"
+              >
+                {{ formLogin.get("email")?.errors | formError: "Email" }}
+              </p>
+            </div>
+
+            <div class="field">
+              <label for="password" class="label">Senha:</label>
+              <div class="control">
+                <input
+                  id="password"
+                  class="input"
+                  [ngClass]="{
+                    'is-danger':
+                      formLogin.get('password')?.dirty &&
+                      !formLogin.get('password')?.valid
+                  }"
+                  type="password"
+                  formControlName="password"
+                  (input)="trimInput('password')"
+                />
+              </div>
+              <p
+                *ngIf="
+                  formLogin.get('password')?.dirty &&
+                  !formLogin.get('password')?.valid
+                "
+                class="help is-danger"
+              >
+                {{
+                  formLogin.get("password")?.errors
+                    | formError: "Senha"
+                }}
+              </p>
+            </div>
+
+            <div class="field">
+              <div class="control">
+                <button class="button is-primary is-fullwidth" [ngClass]="{'is-loading': isLoading}" [disabled]="!formLogin.valid">
+                  Entrar
+                </button>
+              </div>
+            </div>
+          </form>
+          <div class="mt-3 mb-0 has-text-centered">
+            <span
+              >Não possui uma conta?
+              <a routerLink="/cadastro">Realize seu cadastro</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
