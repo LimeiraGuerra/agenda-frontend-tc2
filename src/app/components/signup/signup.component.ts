@@ -4,6 +4,8 @@ import { AuthenticationService } from '../../_services/authentication.service';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
+import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -13,6 +15,9 @@ export class SignupComponent implements OnInit {
   formSignup!: FormGroup;
   isLoading = false;
   serverError = {id: '', hasError: false};
+  faUser = faUser;
+  faEnvelope = faEnvelope;
+  faLock = faLock;
 
   constructor(
     private router: Router,

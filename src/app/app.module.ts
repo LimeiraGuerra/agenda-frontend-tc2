@@ -14,6 +14,7 @@ import { LoginComponent } from './components/login/login.component';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { ServerErrorPipe } from './pipes/server-error.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 registerLocaleData(localePt, 'pt');
 
@@ -32,6 +33,7 @@ registerLocaleData(localePt, 'pt');
     ReactiveFormsModule,
     FormsModule,
     AppRoutingModule,
+    FontAwesomeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
