@@ -65,7 +65,10 @@
         </div>
         <footer class="card-footer">
           <div class="card-footer-item has-background-info-light p-0">
-            <button class="button is-info is-inverted is-fullwidth">
+            <button
+              class="button is-info is-inverted is-fullwidth"
+              (click)="editEvent(event)"
+            >
               <span>Editar</span>
               <span class="icon is-small">
                 <fa-icon [icon]="faEdit"></fa-icon>
@@ -85,3 +88,9 @@
     </div>
   </ng-container>
 </div>
+<app-form-modal
+  [isModalActive]="isModalActive"
+  [selectedEvent]="selectedEvent"
+  (modalControl)="toggleModal($event)"
+  (hasChanges)="updateList($event)"
+></app-form-modal>

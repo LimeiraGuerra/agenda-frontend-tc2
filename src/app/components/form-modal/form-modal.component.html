@@ -1,0 +1,171 @@
+<div class="modal" [ngClass]="{ 'is-active': isModalActive }">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">{{selectedEvent ? 'Editar': 'Novo'}} evento</p>
+      <button
+        class="delete"
+        aria-label="close"
+        (click)="toggleModal(false)"
+      ></button>
+    </header>
+    <section class="modal-card-body">
+      <div *ngIf="serverError.hasError" class="notification is-danger is-light">
+        <button class="delete" (click)="serverError.hasError = false"></button>
+        {{ serverError.id | serverError }}
+      </div>
+      <form id="eventForm" [formGroup]="formEvent" (submit)="onSubmit()">
+        <div class="columns">
+          <div class="field column is-half">
+            <label for="startDate" class="label">Data de Início:</label>
+            <div class="field has-addons mb-0">
+              <div class="control has-icons-left">
+                <input
+                  id="startDate"
+                  type="date"
+                  class="input"
+                  [min]="startMinDate | date: 'YYYY-MM-dd'"
+                  [max]="startMaxDate | date: 'YYYY-MM-dd'"
+                  [ngClass]="{
+                    'is-danger':
+                      formEvent.get('startDate')?.dirty &&
+                      !formEvent.get('startDate')?.valid
+                  }"
+                  formControlName="startDate"
+                  (change)="setLimits()"
+                />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faCalendarAlt"></fa-icon>
+                </span>
+              </div>
+              <div class="control has-icons-left">
+                <input
+                  id="startTime"
+                  type="time"
+                  class="input"
+                  [ngClass]="{
+                    'is-danger':
+                      formEvent.get('startTime')?.dirty &&
+                      !formEvent.get('startTime')?.valid
+                  }"
+                  formControlName="startTime"
+                />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faClock"></fa-icon>
+                </span>
+              </div>
+            </div>
+            <p
+              *ngIf="
+                (formEvent.get('startDate')?.dirty ||
+                  formEvent.get('startTime')?.dirty) &&
+                (!formEvent.get('startDate')?.valid ||
+                  !formEvent.get('startTime')?.valid)
+              "
+              class="help is-danger"
+            >
+              {{
+                formEvent.get("startDate")?.errors ||
+                  formEvent.get("startTime")?.errors
+                  | formError: "Data de Início"
+              }}
+            </p>
+          </div>
+          <div class="field column is-half">
+            <label for="endDate" class="label">Data de Término:</label>
+            <div class="field has-addons mb-0">
+              <div class="control has-icons-left">
+                <input
+                  id="endDate"
+                  type="date"
+                  class="input"
+                  [min]="endMinDate | date: 'YYYY-MM-dd'"
+                  [ngClass]="{
+                    'is-danger':
+                      formEvent.get('endDate')?.dirty &&
+                      !formEvent.get('endDate')?.valid
+                  }"
+                  formControlName="endDate"
+                  (change)="setLimits()"
+                />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faCalendarAlt"></fa-icon>
+                </span>
+              </div>
+              <div class="control has-icons-left">
+                <input
+                  id="endTime"
+                  type="time"
+                  class="input"
+                  [ngClass]="{
+                    'is-danger':
+                      formEvent.get('endTime')?.dirty &&
+                      !formEvent.get('endTime')?.valid
+                  }"
+                  formControlName="endTime"
+                />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faClock"></fa-icon>
+                </span>
+              </div>
+            </div>
+            <p
+              *ngIf="
+                (formEvent.get('endDate')?.dirty ||
+                  formEvent.get('endTime')?.dirty) &&
+                !(
+                  formEvent.get('endDate')?.valid ||
+                  formEvent.get('endTime')?.valid
+                )
+              "
+              class="help is-danger"
+            >
+              {{
+                formEvent.get("endDate")?.errors ||
+                  formEvent.get("endTime")?.errors
+                  | formError: "Data de Término"
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email" class="label">Descrição:</label>
+          <div class="control">
+            <textarea
+              id="description"
+              class="textarea has-fixed-size"
+              [ngClass]="{
+                'is-danger':
+                  formEvent.get('description')?.dirty &&
+                  !formEvent.get('description')?.valid
+              }"
+              formControlName="description"
+              (blur)="trimInput('description')"
+            ></textarea>
+          </div>
+          <p
+            *ngIf="
+              formEvent.get('description')?.dirty &&
+              !formEvent.get('description')?.valid
+            "
+            class="help is-danger"
+          >
+            {{ formEvent.get("description")?.errors | formError: "Descrição" }}
+          </p>
+        </div>
+      </form>
+    </section>
+    <footer class="modal-card-foot">
+      <button
+        class="button is-success"
+        form="eventForm"
+        [ngClass]="{ 'is-loading': isLoading }"
+        [disabled]="!formEvent.valid"
+      >
+        Salvar Evento
+      </button>
+      <button class="button" (click)="toggleModal(false)">Cancelar</button>
+    </footer>
+  </div>
+</div>

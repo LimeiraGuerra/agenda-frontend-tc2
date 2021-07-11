@@ -6,9 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ServerErrorPipe implements PipeTransform {
 
   transform(errorId: string): string {
-    if(!errorId) {
-      return '';
-    }
     switch(errorId) {
       case 'missing-data':
         return 'Faltam dados obrigatórios. Preencha os campos corretamente';
