@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://localhost:8080/api'
+  baseUrl: 'https://agenda-backend-tc2.glitch.me/api'
 };

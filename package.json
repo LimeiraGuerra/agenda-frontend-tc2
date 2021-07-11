@@ -24,6 +24,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@types/bulma-calendar": "^6.0.2",
+    "angular-cli-ghpages": "^1.0.0-rc.2",
     "bulma": "^0.9.3",
     "bulma-calendar": "git+https://github.com/WiziShop/bulma-calendar.git",
     "bulma-pageloader": "^0.3.0",
