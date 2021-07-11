@@ -14,6 +14,10 @@ import { LoginComponent } from './components/login/login.component';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { ServerErrorPipe } from './pipes/server-error.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormModalComponent } from './components/form-modal/form-modal.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 
 registerLocaleData(localePt, 'pt');
 
@@ -25,6 +29,9 @@ registerLocaleData(localePt, 'pt');
     DashboardComponent,
     LoginComponent,
     ServerErrorPipe,
+    FormModalComponent,
+    NavbarComponent,
+    ConfirmModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,6 +39,7 @@ registerLocaleData(localePt, 'pt');
     ReactiveFormsModule,
     FormsModule,
     AppRoutingModule,
+    FontAwesomeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

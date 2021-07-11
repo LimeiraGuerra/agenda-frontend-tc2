@@ -1,1 +1,111 @@
-<p>dashboard works!</p>
+<div class="pageloader is-bottom-to-top" [ngClass]="{ 'is-active': loading }">
+  <span class="title">Carregando...</span>
+</div>
+<div class="columns is-multiline m-6 is-desktop is-mobile">
+  <ng-container *ngFor="let event of eventList">
+    <div
+      *ngIf="
+        (!isFinishedOnly && event.endDate > this.clock) ||
+        (isFinishedOnly && event.endDate < this.clock)
+      "
+      class="
+        column
+        is-12-mobile is-6-tablet is-4-desktop is-4-widescreen is-3-fullhd
+      "
+    >
+      <div class="card">
+        <header
+          class="card-header"
+          [ngClass]="
+            event.startDate < this.clock
+              ? event.endDate > this.clock
+                ? 'has-background-primary-dark'
+                : 'has-background-grey'
+              : 'has-background-info-dark'
+          "
+        >
+          <div
+            class="
+              card-header-title
+              has-text-light
+              is-justify-content-space-between is-align-itens-center
+            "
+          >
+            <div class="is-flex is-flex-direction-column has-text-centered">
+              <span class="icon-text">
+                <span class="icon">
+                  <fa-icon [icon]="faClock"></fa-icon>
+                </span>
+                <span>{{ event.startDate | date: "shortTime" }}</span>
+              </span>
+              <span class="icon-text">
+                <span class="icon">
+                  <fa-icon [icon]="faCalendarAlt"></fa-icon>
+                </span>
+                <span>{{ event.startDate | date: "dd/MM/YYYY" }}</span>
+              </span>
+            </div>
+            <span class="icon is-large">
+              <fa-icon [icon]="faAngleDoubleRight" size="3x"></fa-icon>
+            </span>
+            <div class="is-flex is-flex-direction-column has-text-centered">
+              <span class="icon-text">
+                <span class="icon">
+                  <fa-icon [icon]="faClock"></fa-icon>
+                </span>
+                <span>{{ event.endDate | date: "shortTime" }}</span>
+              </span>
+              <span class="icon-text">
+                <span class="icon">
+                  <fa-icon [icon]="faCalendarAlt"></fa-icon>
+                </span>
+                <span>{{ event.endDate | date: "dd/MM/YYYY" }}</span>
+              </span>
+            </div>
+          </div>
+        </header>
+        <div class="card-content">
+          <div class="content">
+            {{ event.description }}
+          </div>
+        </div>
+        <footer class="card-footer">
+          <div class="card-footer-item has-background-info-light p-0">
+            <button
+              class="button is-info is-inverted is-fullwidth"
+              (click)="editEvent(event)"
+            >
+              <span>Editar</span>
+              <span class="icon is-small">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </span>
+            </button>
+          </div>
+          <div class="card-footer-item has-background-info-light p-0">
+            <button
+              class="button is-info is-inverted is-fullwidth"
+              (click)="removeEvent(event)"
+            >
+              <span>Remover</span>
+              <span class="icon is-small">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </span>
+            </button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<app-form-modal
+  *ngIf="editEventModal"
+  [isModalActive]="isModalActive"
+  [selectedEvent]="selectedEvent"
+  (modalControl)="toggleModal($event)"
+  (hasChanges)="updateList($event)"
+></app-form-modal>
+<app-confirm-modal
+  [isConfirmActive]="isConfirmActive"
+  (confirmControl)="confirmResponse($event)"
+  [selectedEvent]="selectedEvent"
+></app-confirm-modal>

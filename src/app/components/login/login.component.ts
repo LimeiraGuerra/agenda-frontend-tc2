@@ -4,6 +4,8 @@ import { AuthenticationService } from '../../_services/authentication.service';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
+import { faEnvelope, faLock, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,6 +15,9 @@ export class LoginComponent implements OnInit {
   formLogin!: FormGroup;
   isLoading = false;
   serverError = {id: '', hasError: false};
+  faEnvelope = faEnvelope;
+  faLock = faLock;
+  faExclamationCircle = faExclamationCircle;
 
   constructor(
     private router: Router,

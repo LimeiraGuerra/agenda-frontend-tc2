@@ -1,17 +1,33 @@
 <div class="columns is-desktop is-vcentered mt-6 mb-5">
-  <div class="column is-4 is-offset-4">
+  <div
+    class="
+      column
+      is-4-desktop is-6-tablet is-offset-3-tablet is-offset-4-desktop
+    "
+  >
     <div class="card">
       <div class="card-content">
         <div class="content">
           <h3 class="title is-3 has-text-centered">Realize seu cadastro</h3>
-          <div *ngIf="serverError.hasError" class="notification is-danger is-light">
-            <button class="delete" (click)="serverError.hasError = false"></button>
-            {{serverError.id | serverError}}
+          <div
+            *ngIf="serverError.hasError"
+            class="notification is-danger is-light"
+          >
+            <button
+              class="delete"
+              (click)="serverError.hasError = false"
+            ></button>
+            <span class="icon-text">
+              <span class="icon">
+                <fa-icon [icon]="faExclamationCircle"></fa-icon>
+              </span>
+              <span>{{ serverError.id | serverError }}</span>
+            </span>
           </div>
           <form id="signUpForm" [formGroup]="formSignup" (submit)="onSubmit()">
             <div class="field">
               <label for="name" class="label">Nome:</label>
-              <div class="control">
+              <div class="control has-icons-left">
                 <input
                   id="name"
                   class="input"
@@ -24,6 +40,9 @@
                   formControlName="name"
                   (blur)="trimInput('name')"
                 />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faUser"></fa-icon>
+                </span>
               </div>
               <p
                 *ngIf="
@@ -38,7 +57,7 @@
 
             <div class="field">
               <label for="email" class="label">Email:</label>
-              <div class="control">
+              <div class="control has-icons-left">
                 <input
                   id="email"
                   class="input"
@@ -50,6 +69,9 @@
                   type="email"
                   formControlName="email"
                 />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faEnvelope"></fa-icon>
+                </span>
               </div>
               <p
                 *ngIf="
@@ -64,7 +86,7 @@
 
             <div class="field">
               <label for="newPassword" class="label">Senha:</label>
-              <div class="control">
+              <div class="control has-icons-left">
                 <input
                   id="newPassword"
                   class="input"
@@ -77,6 +99,9 @@
                   formControlName="newPassword"
                   (input)="trimInput('newPassword')"
                 />
+                <span class="icon is-small is-left">
+                  <fa-icon [icon]="faLock"></fa-icon>
+                </span>
               </div>
               <p
                 *ngIf="
@@ -85,16 +110,17 @@
                 "
                 class="help is-danger"
               >
-                {{
-                  formSignup.get("newPassword")?.errors
-                    | formError: "Senha"
-                }}
+                {{ formSignup.get("newPassword")?.errors | formError: "Senha" }}
               </p>
             </div>
 
             <div class="field">
               <div class="control">
-                <button class="button is-primary is-fullwidth" [ngClass]="{'is-loading': isLoading}" [disabled]="!formSignup.valid">
+                <button
+                  class="button is-primary is-fullwidth"
+                  [ngClass]="{ 'is-loading': isLoading }"
+                  [disabled]="!formSignup.valid"
+                >
                   Cadastre-se
                 </button>
               </div>
