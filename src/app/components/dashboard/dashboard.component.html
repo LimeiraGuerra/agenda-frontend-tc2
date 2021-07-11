@@ -1,7 +1,13 @@
+<div class="pageloader is-bottom-to-top" [ngClass]="{ 'is-active': loading }">
+  <span class="title">Carregando...</span>
+</div>
 <div class="columns is-multiline m-6 is-desktop is-mobile">
   <ng-container *ngFor="let event of eventList">
     <div
-      *ngIf="event.endDate > this.clock"
+      *ngIf="
+        (!isFinishedOnly && event.endDate > this.clock) ||
+        (isFinishedOnly && event.endDate < this.clock)
+      "
       class="
         column
         is-12-mobile is-6-tablet is-4-desktop is-4-widescreen is-3-fullhd
@@ -76,7 +82,10 @@
             </button>
           </div>
           <div class="card-footer-item has-background-info-light p-0">
-            <button class="button is-info is-inverted is-fullwidth">
+            <button
+              class="button is-info is-inverted is-fullwidth"
+              (click)="removeEvent(event)"
+            >
               <span>Remover</span>
               <span class="icon is-small">
                 <fa-icon [icon]="faTrashAlt"></fa-icon>
@@ -89,8 +98,14 @@
   </ng-container>
 </div>
 <app-form-modal
+  *ngIf="editEventModal"
   [isModalActive]="isModalActive"
   [selectedEvent]="selectedEvent"
   (modalControl)="toggleModal($event)"
   (hasChanges)="updateList($event)"
 ></app-form-modal>
+<app-confirm-modal
+  [isConfirmActive]="isConfirmActive"
+  (confirmControl)="confirmResponse($event)"
+  [selectedEvent]="selectedEvent"
+></app-confirm-modal>

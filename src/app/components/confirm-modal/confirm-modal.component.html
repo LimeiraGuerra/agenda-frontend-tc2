@@ -1,0 +1,36 @@
+<div
+  *ngIf="selectedEvent"
+  class="modal"
+  [ngClass]="{ 'is-active': isConfirmActive && selectedEvent }"
+>
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <span class="icon-text is-align-items-center">
+        <span class="icon is-large">
+          <fa-icon [icon]="faExclamationCircle" size="3x"></fa-icon>
+        </span>
+        <span class="modal-card-title">Deseja realmente excluir este evento?</span>
+      </span>
+    </header>
+    <section class="modal-card-body">
+      <span>{{ selectedEvent.description }}</span>
+    </section>
+    <footer class="modal-card-foot">
+      <button
+        class="button is-success"
+        (click)="response(true)"
+        [ngClass]="{ 'is-loading': isLoading }"
+      >
+        Confirmar
+      </button>
+      <button
+        class="button"
+        (click)="response(false)"
+        [attr.disabled]="isLoading ? '' : null"
+      >
+        Cancelar
+      </button>
+    </footer>
+  </div>
+</div>

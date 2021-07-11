@@ -17,7 +17,12 @@
               class="delete"
               (click)="serverError.hasError = false"
             ></button>
-            {{ serverError.id | serverError }}
+            <span class="icon-text">
+              <span class="icon">
+                <fa-icon [icon]="faExclamationCircle"></fa-icon>
+              </span>
+              <span>{{ serverError.id | serverError }}</span>
+            </span>
           </div>
           <form id="signUpForm" [formGroup]="formSignup" (submit)="onSubmit()">
             <div class="field">

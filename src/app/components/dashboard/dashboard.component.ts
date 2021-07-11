@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  Renderer2,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -14,8 +8,10 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-regular-svg-icons';
 
-import { User } from '../../_models/User';
-import { AuthenticationService } from '../../_services/authentication.service';
+import { ActivatedRoute } from '@angular/router';
+import { EventsService } from 'src/app/_services/events.service';
+import { UserEvent } from 'src/app/_models/UserEvent';
+import { toast } from 'bulma-toast';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,67 +27,78 @@ export class DashboardComponent implements OnInit {
   faTrashAlt = faTrashAlt;
 
   clock = new Date();
+  isFinishedOnly = false;
+  editEventModal = false;
 
-  eventList = [];
+  eventList: UserEvent[];
   isModalActive = false;
-  selectedEvent;
+  isConfirmActive = false;
+  selectedEvent: UserEvent;
 
-  constructor() {
+  constructor(private route: ActivatedRoute, private eventsWeb: EventsService) {
+    route.queryParams.subscribe((param) => {
+      this.isFinishedOnly = param.estado === 'finalizados';
+      this.loadAllEvents();
+    });
     setInterval(() => {
       this.clock = new Date();
     }, 1000);
   }
 
-  ngOnInit(): void {
-    this.loading = true;
-    this.loadAllEvents();
-  }
+  ngOnInit(): void {}
 
   loadAllEvents(): void {
-    this.eventList = [
-      {
-        _id: '1',
-        startDate: new Date('2021-08-20 10:59:00'),
-        endDate: new Date('2021-09-21 10:59:00'),
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus neciaculis mauris.',
-      },
-      {
-        _id: '2',
-        startDate: new Date('2021-08-20 10:59:00'),
-        endDate: new Date('2021-09-20 10:59:00'),
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus neciaculis mauris.',
-      },
-      {
-        _id: '3',
-        startDate: new Date('2021-08-15 10:59:00'),
-        endDate: new Date('2021-09-18 10:59:00'),
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus neciaculis mauris.',
-      },
-      {
-        _id: '4',
-        startDate: new Date('2021-07-09 03:29:30'),
-        endDate: new Date('2021-07-09 03:29:40'),
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus neciaculis mauris.',
-      },
-    ];
-    this.eventList.sort(
-      (a, b) => a.startDate - b.startDate || a.endDate - b.endDate
-    );
-    this.loading = false;
+    this.loading = true;
+    this.eventsWeb
+      .getAllEvents()
+      .pipe(first())
+      .subscribe(
+        (events) => {
+          events.forEach((e) => {
+            e.startDate = new Date(e.startDate);
+            e.endDate = new Date(e.endDate);
+          });
+          this.eventList = events;
+          this.eventList.sort(
+            (a, b) => a.startDate - b.startDate || a.endDate - b.endDate
+          );
+          this.loading = false;
+        },
+        (error) => {
+          toast({
+            message: error,
+            type: 'is-danger',
+            dismissible: true,
+          });
+          this.loading = false;
+        }
+      );
   }
 
-  editEvent(event: object): void {
+  editEvent(event: UserEvent): void {
     this.selectedEvent = event;
     this.isModalActive = true;
+    this.editEventModal = true;
   }
 
   toggleModal(state: boolean): void {
     this.isModalActive = state;
+    this.editEventModal = state;
   }
 
-  updateList(e) {}
+  removeEvent(event: UserEvent): void {
+    this.selectedEvent = event;
+    this.isConfirmActive = true;
+  }
+
+  confirmResponse(res: boolean): void {
+    this.updateList(res);
+    this.isConfirmActive = false;
+  }
+
+  updateList(e: boolean) {
+    if (e) {
+      this.loadAllEvents();
+    }
+  }
 }

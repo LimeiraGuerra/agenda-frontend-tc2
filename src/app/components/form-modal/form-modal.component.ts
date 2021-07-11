@@ -1,7 +1,12 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faClock } from '@fortawesome/free-regular-svg-icons';
+import { UserEvent } from 'src/app/_models/UserEvent';
+import { EventsService } from 'src/app/_services/events.service';
+import { first } from 'rxjs/operators';
+import { toast } from 'bulma-toast';
 
 @Component({
   selector: 'app-form-modal',
@@ -18,13 +23,14 @@ export class FormModalComponent implements OnInit {
 
   faCalendarAlt = faCalendarAlt;
   faClock = faClock;
+  faExclamationCircle = faExclamationCircle;
 
   @Input() isModalActive: boolean;
-  @Input() selectedEvent;
+  @Input() selectedEvent: UserEvent;
   @Output() modalControl = new EventEmitter<boolean>();
   @Output() hasChanges = new EventEmitter<boolean>();
 
-  constructor() {}
+  constructor(private eventsWeb: EventsService) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -50,36 +56,24 @@ export class FormModalComponent implements OnInit {
 
   private initForm(): void {
     this.formEvent = new FormGroup({
-      description: new FormControl(
-        this.selectedEvent?.description || '',
-        [Validators.required, Validators.minLength(2)]
-      ),
+      description: new FormControl(this.selectedEvent?.description || '', [
+        Validators.required,
+        Validators.minLength(2),
+      ]),
       startDate: new FormControl(
-        this.formatedDateTime(
-          this.selectedEvent?.startDate,
-          'YYYY-MM-dd'
-        ),
+        this.formatedDateTime(this.selectedEvent?.startDate, 'YYYY-MM-dd'),
         [Validators.required]
       ),
       startTime: new FormControl(
-        this.formatedDateTime(
-          this.selectedEvent?.startDate,
-          'hh:mm'
-        ),
+        this.formatedDateTime(this.selectedEvent?.startDate, 'HH:mm'),
         [Validators.required]
       ),
       endDate: new FormControl(
-        this.formatedDateTime(
-          this.selectedEvent?.endDate,
-          'YYYY-MM-dd'
-        ),
+        this.formatedDateTime(this.selectedEvent?.endDate, 'YYYY-MM-dd'),
         [Validators.required]
       ),
       endTime: new FormControl(
-        this.formatedDateTime(
-          this.selectedEvent?.endDate,
-          'hh:mm'
-        ),
+        this.formatedDateTime(this.selectedEvent?.endDate, 'HH:mm'),
         [Validators.required]
       ),
     });
@@ -91,12 +85,6 @@ export class FormModalComponent implements OnInit {
   }
 
   trimInput(formCtrlName: string): void {
-    console.log((this.formEvent.get('startDate')?.dirty ||
-    this.formEvent.get('startTime')?.dirty) &&
-  (
-    !this.formEvent.get('startDate')?.valid ||
-    !this.formEvent.get('startTime')?.valid
-  ))
     const field = this.formEvent.get(formCtrlName);
     if (field) {
       field?.setValue(field?.value.trim());
@@ -109,6 +97,74 @@ export class FormModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.formEvent.valid);
+    if (this.formEvent.valid) {
+      this.isLoading = true;
+      const event: UserEvent = {
+        description: this.formEvent.get('description').value,
+        startDate:
+          this.formEvent.get('startDate').value +
+          ' ' +
+          this.formEvent.get('startTime').value,
+        endDate:
+          this.formEvent.get('endDate').value +
+          ' ' +
+          this.formEvent.get('endTime').value,
+      };
+      if (this.selectedEvent) {
+        event['_id'] = this.selectedEvent._id;
+        this.edit(event);
+      }
+      else {
+        this.register(event);
+      }
+    }
+  }
+
+  register(event: UserEvent): void {
+    this.eventsWeb
+      .registerEvent(event)
+      .pipe(first())
+      .subscribe(
+        (data) => {
+          toast({
+            message: 'A criação do evento foi realizado com sucesso',
+            type: 'is-success',
+            dismissible: true,
+            position: 'bottom-center'
+          });
+          this.hasChanges.emit(true);
+          this.toggleModal(false);
+          this.isLoading = false;
+        },
+        (error) => {
+          this.serverError.id = error.id;
+          this.serverError.hasError = true;
+          this.isLoading = false;
+        }
+      );
+  }
+
+  edit(event: UserEvent): void {
+    this.eventsWeb
+      .updateEvent(event)
+      .pipe(first())
+      .subscribe(
+        (data) => {
+          toast({
+            message: 'A edição do evento foi realizado com sucesso',
+            type: 'is-success',
+            dismissible: true,
+            position: 'bottom-center'
+          });
+          this.hasChanges.emit(true);
+          this.toggleModal(false);
+          this.isLoading = false;
+        },
+        (error) => {
+          this.serverError.id = error.id;
+          this.serverError.hasError = true;
+          this.isLoading = false;
+        }
+      );
   }
 }

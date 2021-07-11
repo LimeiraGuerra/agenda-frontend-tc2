@@ -26,6 +26,8 @@
     "@types/bulma-calendar": "^6.0.2",
     "bulma": "^0.9.3",
     "bulma-calendar": "git+https://github.com/WiziShop/bulma-calendar.git",
+    "bulma-pageloader": "^0.3.0",
+    "bulma-toast": "^2.3.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

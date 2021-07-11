@@ -1,0 +1,94 @@
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand ml-6">
+    <a class="navbar-item has-text-info">
+      <span class="icon is-large">
+        <fa-icon [icon]="faCalendarAlt" size="3x"></fa-icon>
+      </span>
+      <h1 class="is-size-4">Meus Eventos</h1>
+    </a>
+    <a
+      role="button"
+      class="navbar-burger"
+      [ngClass]="{ 'is-active': isMenuMobileOn }"
+      aria-label="menu"
+      aria-expanded="false"
+      data-target="navbarBasicExample"
+      (click)="toggleMobileMenu()"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div
+    id="navbarEvents"
+    class="navbar-menu"
+    [ngClass]="{ 'is-active': isMenuMobileOn }"
+  >
+    <div class="navbar-start">
+      <a class="navbar-item is-tab" [ngClass]="{ 'is-active' : !tabSwitch }" routerLink="/dashboard">
+        <span class="icon-text">
+          <span class="icon">
+            <fa-icon [icon]="faStar"></fa-icon>
+          </span>
+          <span>Eventos</span>
+        </span>
+      </a>
+      <a
+        class="navbar-item is-tab"
+        [ngClass]="{ 'is-active' : tabSwitch }"
+        routerLink="/dashboard"
+        [queryParams]="{ estado: 'finalizados' }"
+      >
+        <span class="icon-text">
+          <span class="icon">
+            <fa-icon [icon]="faCheckSquare"></fa-icon>
+          </span>
+          <span>Finalizados</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="navbar-end mr-6">
+      <div class="navbar-item">
+        <div class="buttons">
+          <a class="button is-primary" (click)="toggleModal(true)">
+            <span class="icon-text">
+              <span class="icon">
+                <fa-icon [icon]="faCalendarPlus"></fa-icon>
+              </span>
+              <span><strong>Novo Evento</strong></span>
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          <span class="icon-text">
+            <span class="icon">
+              <fa-icon [icon]="faUserCircle"></fa-icon>
+            </span>
+            <span>{{ user.name }}</span>
+          </span>
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" (click)="userLogout.emit()">
+            <span class="icon-text">
+              <span class="icon">
+                <fa-icon [icon]="faSignOutAlt"></fa-icon>
+              </span>
+              <span>Sair</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<app-form-modal
+  *ngIf="newEventModal"
+  [isModalActive]="isModalActive"
+  (modalControl)="toggleModal($event)"
+  (hasChanges)="updateList($event)"
+></app-form-modal>
